@@ -22,7 +22,7 @@ var define = function (properties, rule) {
         // Parses variables that are also parameters. Ignores other variables for compatability with Sass variables.
         // We only need the index of each parameter
         variables: node.value.match(variablesPattern).filter(function (variable) {
-          return node.value.includes(variable);
+          return node.value.indexOf(variable) !== -1;
         }).map(function (variable) {
           return parameters.indexOf(variable);
         })
