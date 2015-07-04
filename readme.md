@@ -3,10 +3,6 @@
 
 [PostCSS] plugin to define and use custom properties. Not to be confused with the CSS Custom Properties specification which are really variables.
 
-[PostCSS]: https://github.com/postcss/postcss
-[ci-img]:  https://travis-ci.org/daleeidd/postcss-define-property.svg
-[ci]:      https://travis-ci.org/daleeidd/postcss-define-property
-
 NOTE: Must be used before any plugin that uses the `$` for variables.
 
 ```css
@@ -57,3 +53,14 @@ postcss([ require('postcss-define-property') ])
 ```
 
 See [PostCSS] docs for examples for your environment.
+
+## Related
+
+- [Mixins][postcss-mixins]: Mixins for more complicated cases
+- [Aliases][postcss-alias]: Property aliases for simpler cases
+
+[postcss-mixins]: https://github.com/postcss/postcss-mixins
+[postcss-alias]:  https://github.com/seaneking/postcss-alias
+[PostCSS]:        https://github.com/postcss/postcss
+[ci-img]:         https://travis-ci.org/daleeidd/postcss-define-property.svg
+[ci]:             https://travis-ci.org/daleeidd/postcss-define-property
