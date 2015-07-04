@@ -1,0 +1,33 @@
+{
+  "name": "postcss-define-property",
+  "version": "0.0.0",
+  "description": "PostCSS plugin to define and use custom properties",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "custom properties"
+  ],
+  "author": "Dale Eidd <dale@eidd.name>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daleeidd/postcss-define-property.git"
+  },
+  "bugs": {
+    "url": "https://github.com/daleeidd/postcss-define-property/issues"
+  },
+  "homepage": "https://github.com/daleeidd/postcss-define-property",
+  "dependencies": {
+    "postcss": "^4.1.13"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^0.14.0",
+    "gulp-mocha": "^2.1.2"
+  },
+  "scripts": {
+    "test": "gulp"
+  }
+}
