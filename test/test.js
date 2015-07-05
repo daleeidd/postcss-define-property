@@ -43,11 +43,13 @@ describe('postcss-define-property', function () {
 
   it('should ignore sass-style variables', function (done) {
     test(
-      'size: $height $width { height: $height; width: $width; }\n' +
-      '$anchor-width: 100px\n' +
-      'a { size: 50px $anchor-width; }',
-      '$anchor-width: 100px\n' +
-      'a { height: 50px; width: $anchor-width; }',
+      '$zero: 0;\n' +
+      'squashed: $width { height: $zero; width: $width; }\n' +
+      '$anchor-width: 100px;\n' +
+      'a { squashed: $anchor-width; }',
+      '$zero: 0;\n' +
+      '$anchor-width: 100px;\n' +
+      'a { height: $zero; width: $anchor-width; }',
       {}, done);
   });
 
