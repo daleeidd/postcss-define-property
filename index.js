@@ -1,16 +1,21 @@
 'use strict';
 
 var postcss = require('postcss');
+var extend  = require('extend');
 
-var variablesPattern      = /\$\S+/g;
-var parametersPattern     = variablesPattern;
-var customPropertyPattern = /^[^${}: ]+ *: /;
-var propertyKeyDelimiter  = ':';
+var variablesPattern;
+var parametersPattern;
+var propertyKeyDelimiter;
+var customPropertyPattern;
+var signatureSeparator = ':';
 
 // Adds a property definition to properties
-var define = function (properties, rule) {
-  var name = rule.selector.match(customPropertyPattern).shift().replace(':', '').trim();
-  var parameters = rule.selector.match(parametersPattern);
+var define = function (properties, rule, options) {
+  var signature = rule.selector || rule.params;
+  var name = signature.match(customPropertyPattern).shift().replace(propertyKeyDelimiter, '').trim();
+  var parameters = signature.replace(customPropertyPattern, '').match(parametersPattern).map(function (parameter) {
+    return parameter.replace(options.syntax.parameter, '');
+  });
 
   var property = {
     name: name,
@@ -21,7 +26,10 @@ var define = function (properties, rule) {
         value: node.value,
         // Parses variables that are also parameters. Ignores other variables for compatability with Sass variables.
         // We only need the index of each parameter
-        variables: node.value.match(variablesPattern).filter(function (variable) {
+        variables: node.value.match(variablesPattern)
+        .map(function (variable) {
+          return variable.replace(options.syntax.variable, '');
+        }).filter(function (variable) {
           return node.value.indexOf(variable) !== -1;
         }).map(function (variable) {
           return parameters.indexOf(variable);
@@ -30,19 +38,20 @@ var define = function (properties, rule) {
     })
   };
 
-  properties[property.name + propertyKeyDelimiter + parameters.length] = property;
+  properties[property.name + signatureSeparator + parameters.length] = property;
   rule.removeSelf();
 };
 
 // Applies the custom property to the given declaration
-var apply = function (customProperty, declaration) {
+var apply = function (customProperty, declaration, options) {
   customProperty.declarations.forEach(function (customDeclaration) {
     // No need to copy value here as replace will copy value
     var value = customDeclaration.value;
 
     // Replace parameter variables with user given values
     customDeclaration.variables.forEach(function (variable) {
-      value = value.replace(customProperty.parameters[variable], declaration.values[variable]);
+      value = value.replace(options.syntax.variable + customProperty.parameters[variable],
+        declaration.values[variable]);
     });
 
     // Using cloneBefore to insert declaration provides sourcemap support
@@ -56,23 +65,53 @@ var apply = function (customProperty, declaration) {
 };
 
 module.exports = postcss.plugin('postcss-properties-properties', function (options) {
-  options = options || {};
+
+  var defaults = {
+    syntax: {
+      atrule: '',
+      parameter: '$',
+      separator: ':',
+      variable: '$'
+    }
+  };
+
+  // Apply defaults and normalise options
+  options = options == null ? defaults : extend(true, defaults, options);
+  options.syntax.atrule = options.syntax.atrule === true  ? 'property' :
+                          options.syntax.atrule === false ? '' :
+                          options.syntax.atrule;
+
+  // Check for invalid option combinations
+  if (options.syntax.separator === '' && options.syntax.atrule === '') {
+    throw new Error('Invalid Syntax Options: The separator cannot be removed for non atrules');
+  }
+
+  // Set patterns based on options
+  parametersPattern     = new RegExp((options.syntax.parameter ? '\\' : '') + options.syntax.parameter + '\\S+', 'g');
+  variablesPattern      = new RegExp((options.syntax.variable ? '\\' : '') + options.syntax.variable + '\\S+', 'g');
+  propertyKeyDelimiter  = options.syntax.separator;
+  customPropertyPattern = new RegExp('^[^{}' + propertyKeyDelimiter + ' ]+ *' + propertyKeyDelimiter + ' ');
 
   return function (css) {
     var properties = Object.create({});
 
     // Use eachInside instead of more specific API methods to maintain redefinition and usage ordering
     css.eachInside(function (node) {
-      if (node.type === 'rule') {
+      if (options.syntax.atrule === '' && node.type === 'rule') {
         if (node.selector.match(customPropertyPattern)) {
-          define(properties, node);
+          define(properties, node, options);
+        }
+      }
+      else if (options.syntax.atrule !== '' && node.type === 'atrule') {
+        if (node.name === options.syntax.atrule) {
+          define(properties, node, options);
         }
       }
       else if (node.type === 'decl') {
         node.values = postcss.list.space(node.value);
-        var property = node.prop + propertyKeyDelimiter + node.values.length;
+        var property = node.prop + signatureSeparator + node.values.length;
         if (properties[property]) {
-          apply(properties[property], node);
+          apply(properties[property], node, options);
         }
       }
     });

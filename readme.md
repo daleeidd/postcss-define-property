@@ -46,6 +46,36 @@ Properties – including native ones – can be redefined. The placement of prop
 
 Properties can also be overloaded as the parameter quantity forms part of the property's signature.
 
+## Options
+
+### `syntax`
+
+The syntax is customisable by providing an object. The following are the available syntax options:
+
+| Syntax | Types | Default | Comment |
+| ------ |:-----:|:-------:| ------- |
+| atrule | `boolean` `string` | `false` | `true` for `@property` or a `string` to specify the `atrule` name |
+| parameter | `string` | `'$'` | sets the parameter prefix within the signature |
+| separator | `string` | `':'` | sets the name/parameter separator within the signature. Cannot be set to `''` if not an `atrule` |
+| variable | `string` | `'$'` | sets the parameter prefix within the body |
+
+As an example, the following syntax options:
+
+```js
+properties({ syntax: { atrule: true, parameter: '', separator: '' } });
+```
+
+Will be able to parse:
+
+```css
+@property size height width {
+  height: $height;
+  width: $width;
+}
+```
+
+
+
 ## Usage
 
 ```js
