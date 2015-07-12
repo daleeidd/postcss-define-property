@@ -168,4 +168,11 @@ describe('postcss-define-property', function () {
       { syntax: { separator: '' } }, done);
   });
 
+  it('should allow the user to add a prefix to properties', function (done) {
+    pass(
+      'size: $height $width { height: $height; width: $width; }\n' +
+      'a { +size: 10px 20px; size: 10px; }',
+      'a { height: 10px; width: 20px; size: 10px; }',
+      { syntax: { property: '+' } }, done);
+  });
 });

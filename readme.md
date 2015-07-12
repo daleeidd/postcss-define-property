@@ -56,13 +56,21 @@ The syntax is customisable by providing an object. The following are the availab
 | ------ |:-----:|:-------:| ------- |
 | atrule | `boolean` `string` | `false` | `true` for `@property` or a `string` to specify the `atrule` name |
 | parameter | `string` | `'$'` | sets the parameter prefix within the signature |
+| property | `string` | `''` | sets the prefix for property invocation |
 | separator | `string` | `':'` | sets the name/parameter separator within the signature. Cannot be set to `''` if not an `atrule` |
 | variable | `string` | `'$'` | sets the parameter prefix within the body |
 
 As an example, the following syntax options:
 
 ```js
-properties({ syntax: { atrule: true, parameter: '', separator: '' } });
+properties({
+  syntax: {
+    atrule: true,
+    parameter: '',
+    property: '+',
+    separator: ''
+  }
+});
 ```
 
 Will be able to parse:
@@ -72,9 +80,13 @@ Will be able to parse:
   height: $height;
   width: $width;
 }
+
+.rectangle {
+  +size: 50px 100px;
+}
 ```
 
-
+The above is useful if one is concerned about not being able to discern custom properties from native ones.
 
 ## Usage
 

@@ -38,7 +38,7 @@ var define = function (properties, rule, options) {
     })
   };
 
-  properties[property.name + signatureSeparator + parameters.length] = property;
+  properties[options.syntax.property + property.name + signatureSeparator + parameters.length] = property;
   rule.removeSelf();
 };
 
@@ -70,6 +70,7 @@ module.exports = postcss.plugin('postcss-properties-properties', function (optio
     syntax: {
       atrule: '',
       parameter: '$',
+      property: '',
       separator: ':',
       variable: '$'
     }
@@ -93,7 +94,7 @@ module.exports = postcss.plugin('postcss-properties-properties', function (optio
   customPropertyPattern = new RegExp('^[^{}' + propertyKeyDelimiter + ' ]+ *' + propertyKeyDelimiter + ' ');
 
   return function (css) {
-    var properties = Object.create({});
+    var properties = Object.create(null);
 
     // Use eachInside instead of more specific API methods to maintain redefinition and usage ordering
     css.eachInside(function (node) {
