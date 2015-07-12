@@ -14,7 +14,7 @@ var define = function (properties, rule, options) {
   var signature = rule.selector || rule.params;
   var name = signature.match(customPropertyPattern).shift().replace(propertyKeyDelimiter, '').trim();
   var parameters = signature.replace(customPropertyPattern, '').match(parametersPattern).map(function (parameter) {
-    return parameter.replace(options.syntax.parameter, '');
+    return parameter.replace(options.syntax.parameter, options.syntax.variable);
   });
 
   var property = {
@@ -27,9 +27,7 @@ var define = function (properties, rule, options) {
         // Parses variables that are also parameters. Ignores other variables for compatability with Sass variables.
         // We only need the index of each parameter
         variables: node.value.match(variablesPattern)
-        .map(function (variable) {
-          return variable.replace(options.syntax.variable, '');
-        }).filter(function (variable) {
+        .filter(function (variable) {
           return node.value.indexOf(variable) !== -1;
         }).map(function (variable) {
           return parameters.indexOf(variable);
@@ -43,14 +41,14 @@ var define = function (properties, rule, options) {
 };
 
 // Applies the custom property to the given declaration
-var apply = function (customProperty, declaration, options) {
+var apply = function (customProperty, declaration) {
   customProperty.declarations.forEach(function (customDeclaration) {
     // No need to copy value here as replace will copy value
     var value = customDeclaration.value;
 
     // Replace parameter variables with user given values
     customDeclaration.variables.forEach(function (variable) {
-      value = value.replace(options.syntax.variable + customProperty.parameters[variable],
+      value = value.replace(customProperty.parameters[variable],
         declaration.values[variable]);
     });
 
@@ -89,9 +87,9 @@ module.exports = postcss.plugin('postcss-properties-properties', function (optio
 
   // Set patterns based on options
   parametersPattern     = new RegExp((options.syntax.parameter ? '\\' : '') + options.syntax.parameter + '\\S+', 'g');
-  variablesPattern      = new RegExp((options.syntax.variable ? '\\' : '') + options.syntax.variable + '\\S+', 'g');
+  variablesPattern      = new RegExp((options.syntax.variable  ? '\\' : '') + options.syntax.variable  + '\\S+', 'g');
   propertyKeyDelimiter  = options.syntax.separator;
-  customPropertyPattern = new RegExp('^[^{}' + propertyKeyDelimiter + ' ]+ *' + propertyKeyDelimiter + ' ');
+  customPropertyPattern = new RegExp('^.+?' + propertyKeyDelimiter + ' ');
 
   return function (css) {
     var properties = Object.create(null);
