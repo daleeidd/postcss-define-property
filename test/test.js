@@ -31,8 +31,9 @@ describe('postcss-define-property', function () {
   it('should allow the definition and usage of custom properties', function (done) {
     pass(
       'size: $height $width { height: $height; width: $width; }\n' +
-      'a { size: 50px 100px; }',
-      'a { height: 50px; width: 100px; }',
+      'center-left: $offset { left: auto; right: $offset; text-align: right; }\n' +
+      'a { size: 50px 100px; center-left: 20px; }',
+      'a { height: 50px; width: 100px; left: auto; right: 20px; text-align: right; }',
       {}, done);
   });
 
