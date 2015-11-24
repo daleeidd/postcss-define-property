@@ -1,4 +1,4 @@
-# PostCSS Custom Properties
+# postcss-define-property
 [![Build Status][ci-img]][ci]
 
 [PostCSS] plugin to define and use custom properties. Not to be confused with the CSS Custom Properties specification which are really variables.
