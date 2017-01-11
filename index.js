@@ -37,7 +37,7 @@ var define = function (properties, rule, options) {
   };
 
   properties[options.syntax.property + property.name + signatureSeparator + parameters.length] = property;
-  rule.removeSelf();
+  rule.remove();
 };
 
 // Applies the custom property to the given declaration
@@ -59,7 +59,7 @@ var apply = function (customProperty, declaration) {
     });
   });
 
-  declaration.removeSelf();
+  declaration.remove();
 };
 
 module.exports = postcss.plugin('postcss-properties-properties', function (options) {
