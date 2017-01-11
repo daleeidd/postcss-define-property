@@ -94,8 +94,7 @@ module.exports = postcss.plugin('postcss-properties-properties', function (optio
   return function (css) {
     var properties = Object.create(null);
 
-    // Use eachInside instead of more specific API methods to maintain redefinition and usage ordering
-    css.eachInside(function (node) {
+    css.walk(function (node) {
       if (options.syntax.atrule === '' && node.type === 'rule') {
         if (node.selector.match(customPropertyPattern)) {
           define(properties, node, options);
