@@ -1,6 +1,6 @@
 {
   "name": "postcss-define-property",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "PostCSS plugin to define and use custom properties",
   "keywords": [
     "postcss",
