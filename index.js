@@ -37,7 +37,7 @@ var define = function (properties, rule, options) {
   };
 
   properties[options.syntax.property + property.name + signatureSeparator + parameters.length] = property;
-  rule.removeSelf();
+  rule.remove();
 };
 
 // Applies the custom property to the given declaration
@@ -59,7 +59,7 @@ var apply = function (customProperty, declaration) {
     });
   });
 
-  declaration.removeSelf();
+  declaration.remove();
 };
 
 module.exports = postcss.plugin('postcss-properties-properties', function (options) {
@@ -94,8 +94,7 @@ module.exports = postcss.plugin('postcss-properties-properties', function (optio
   return function (css) {
     var properties = Object.create(null);
 
-    // Use eachInside instead of more specific API methods to maintain redefinition and usage ordering
-    css.eachInside(function (node) {
+    css.walk(function (node) {
       if (options.syntax.atrule === '' && node.type === 'rule') {
         if (node.selector.match(customPropertyPattern)) {
           define(properties, node, options);
