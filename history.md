@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.5.0] - 2017-06-07
 ### Fixed
-- Fix naive regex which included all non-whitespace as valid characters for parameters (fixes #2)
+- Fix naive regex which included all non-whitespace as valid characters for parameters (fixes #3)
 
 ## [0.4.0] - 2017-03-08
 ### Fixed
