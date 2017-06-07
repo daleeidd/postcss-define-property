@@ -86,8 +86,10 @@ module.exports = postcss.plugin('postcss-properties-properties', function (optio
   }
 
   // Set patterns based on options
-  parametersPattern     = new RegExp((options.syntax.parameter ? '\\' : '') + options.syntax.parameter + '\\S+', 'g');
-  variablesPattern      = new RegExp((options.syntax.variable  ? '\\' : '') + options.syntax.variable  + '\\S+', 'g');
+  parametersPattern     = new RegExp(
+    (options.syntax.parameter ? '\\' : '') + options.syntax.parameter + '(\\w|\\d|[-_])+', 'g');
+  variablesPattern      = new RegExp(
+    (options.syntax.variable  ? '\\' : '') + options.syntax.variable  + '(\\w|\\d|[-_])+', 'g');
   propertyKeyDelimiter  = options.syntax.separator;
   customPropertyPattern = new RegExp('^.+?' + propertyKeyDelimiter + ' ');
 

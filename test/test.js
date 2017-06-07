@@ -37,6 +37,14 @@ describe('postcss-define-property', function () {
       {}, done);
   });
 
+  it('should work for syntax on parameter boundary', function (done) {
+    pass(
+      'boundary: $x $p-y { width: calc(100% - $x); content: url("$p-y"); }\n' +
+      'a { boundary: 1px file.txt; }',
+      'a { width: calc(100% - 1px); content: url("file.txt"); }',
+      {}, done);
+  });
+
   it('should handle malformed definitions', function (done) {
     pass(
       'size : $height $width { height: $height; width: $width; }\n' +
